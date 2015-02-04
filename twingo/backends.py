@@ -32,7 +32,7 @@ class TwitterBackend:
         """
         # APIオブジェクトを構築
         oauth_handler = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-        oauth_handler.set_access_token(access_token.key, access_token.secret)
+        oauth_handler.set_access_token(access_token[0], access_token[1])
         api = tweepy.API(oauth_handler)
 
         # ログインしようとしているユーザーのTwitter情報を取得
@@ -87,4 +87,3 @@ class TwitterBackend:
             return user
         except User.DoesNotExist:
             return None
-
