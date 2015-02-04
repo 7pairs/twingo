@@ -62,13 +62,13 @@ def twitter_callback(request):
     oauth_verifier = request.GET.get('oauth_verifier')
 
     # セッションの値とTwitterからの返却値が一致しない場合は処理続行不可能
-    if request_token.key != oauth_token:
+    if request_token.oauth_token != oauth_token:
         request.session.clear()
         raise PermissionDenied
 
     # アクセストークンを取得
     oauth_handler = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
-    oauth_handler.set_request_token(request_token.key, request_token.secret)
+    oauth_handler.request_token = request_token
     access_token = oauth_handler.get_access_token(oauth_verifier)
 
     # 認証処理
@@ -102,4 +102,3 @@ def twitter_logout(request):
     # トップページにリダイレクト
     top_url = getattr(settings, 'TOP_URL', '/')
     return HttpResponseRedirect(top_url)
-
