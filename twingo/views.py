@@ -62,7 +62,7 @@ def twitter_callback(request):
     oauth_verifier = request.GET.get('oauth_verifier')
 
     # セッションの値とTwitterからの返却値が一致しない場合は処理続行不可能
-    if request_token.oauth_token != oauth_token:
+    if request_token.get('oauth_token') != oauth_token:
         request.session.clear()
         raise PermissionDenied
 
