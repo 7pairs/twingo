@@ -75,7 +75,7 @@ urlpatterns = patterns('',
 )
 ```
 
-`r'^authentication_url/` は任意のURLで構いません。その配下のURLでtwingoが動作します。
+`r'^authentication_url/'` は任意のURLで構いません。その配下のURLでtwingoが動作します。
 
 ## ユーザープロファイル
 
