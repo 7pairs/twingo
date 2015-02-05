@@ -1,104 +1,95 @@
 # -*- coding: utf-8 -*-
 
-"""
-Twingoで利用するビューを提供します。
-
-@author: Jun-ya HASEBA
-"""
+import tweepy
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
-
-import tweepy
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 
 
 def twitter_login(request):
     """
-    ログインURLへのアクセス時に呼び出されます。
+    ログインを行う。
 
-    @param request: リクエストオブジェクト
-    @type request: django.http.HttpRequest
-    @return: 遷移先を示すレスポンスオブジェクト
-    @rtype: django.http.HttpResponse
+    :param request: リクエストオブジェクト
+    :type request: django.http.HttpRequest
+    :return: 遷移先を示すレスポンスオブジェクト
+    :rtype: django.http.HttpResponse
     """
-    # TwitterからのコールバックURLを取得
-    callback_url = getattr(settings, 'CALLBACK_URL', None)
-    if not callback_url:
-        callback_url = 'http://%s/callback/' % request.META.get('HTTP_HOST', 'localhost')
-
-    # 認証URLを取得
-    oauth_handler = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET, callback_url)
+    # 認証URLを取得する
+    oauth_handler = tweepy.OAuthHandler(
+        settings.CONSUMER_KEY,
+        settings.CONSUMER_SECRET,
+        request.build_absolute_uri(reverse(twitter_callback))
+    )
     authorization_url = oauth_handler.get_authorization_url()
 
-    # リクエストトークンをセッションに保存
+    # リクエストトークンをセッションに保存する
     request.session['request_token'] = oauth_handler.request_token
 
-    # ログイン後のリダイレクト先URLをセッションに保存
-    request.session['next'] = request.GET.get('next')
+    # ログイン完了後のリダイレクト先URLをセッションに保存する
+    if 'next' in request.GET:
+        request.session['next'] = request.GET['next']
 
-    # 認証URLにリダイレクト
+    # 認証URLにリダイレクトする
     return HttpResponseRedirect(authorization_url)
 
 
 def twitter_callback(request):
     """
-    Twitterからのコールバック時に呼び出されます。
+    Twitterからのコールバック時に呼び出される処理。
 
-    @param request: リクエストオブジェクト
-    @type request: django.http.HttpRequest
-    @return: 遷移先を示すレスポンスオブジェクト
-    @rtype: django.http.HttpResponse
+    :param request: リクエストオブジェクト
+    :type request: django.http.HttpRequest
+    :return: 遷移先を示すレスポンスオブジェクト
+    :rtype: django.http.HttpResponse
     """
-    # セッションからリクエストトークンを取得
+    # セッションからリクエストトークンを取得する
     request_token = request.session.get('request_token')
     if not request_token:
         request.session.clear()
-        raise PermissionDenied
+        return HttpResponse('Unauthorized', status=401)
 
-    # Twitterからの返却値を取得
+    # Twitterからの返却値を取得する
     oauth_token = request.GET.get('oauth_token')
     oauth_verifier = request.GET.get('oauth_verifier')
 
-    # セッションの値とTwitterからの返却値が一致しない場合は処理続行不可能
+    # セッションの値とTwitterからの返却値が一致しない場合は処理を中断する
     if request_token.get('oauth_token') != oauth_token:
         request.session.clear()
-        raise PermissionDenied
+        return HttpResponse('Unauthorized', status=401)
 
-    # アクセストークンを取得
+    # アクセストークンを取得する
     oauth_handler = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
     oauth_handler.request_token = request_token
     access_token = oauth_handler.get_access_token(oauth_verifier)
 
-    # 認証処理
+    # 認証処理を実行する
     authenticated_user = authenticate(access_token=access_token)
-
-    # ログイン処理
     if authenticated_user:
         login(request, authenticated_user)
     else:
         request.session.clear()
-        raise PermissionDenied
+        return HttpResponse('Unauthorized', status=401)
 
-    # 認証成功
-    top_url = getattr(settings, 'TOP_URL', '/')
-    next_url = request.session.get('next', top_url)
-    return HttpResponseRedirect(next_url)
+    # ログイン後に遷移するべき画面にリダイレクトする
+    url = request.session.get('next', getattr(settings, 'AFTER_LOGIN_URL', '/'))
+    return HttpResponseRedirect(url)
 
 
 def twitter_logout(request):
     """
-    ログアウトURLへのアクセス時に呼び出されます。
+    ログアウトを行う。
 
-    @param request: リクエストオブジェクト
-    @type request: django.http.HttpRequest
-    @return: 遷移先を示すレスポンスオブジェクト
-    @rtype: django.http.HttpResponse
+    :param request: リクエストオブジェクト
+    :type request: django.http.HttpRequest
+    :return: 遷移先を示すレスポンスオブジェクト
+    :rtype: django.http.HttpResponse
     """
-    # ログアウト処理
+    # ログアウト処理を実行する
     logout(request)
 
-    # トップページにリダイレクト
-    top_url = getattr(settings, 'TOP_URL', '/')
-    return HttpResponseRedirect(top_url)
+    # ログアウト後に遷移するべき画面にリダイレクトする
+    url = getattr(settings, 'AFTER_LOGOUT_URL', '/')
+    return HttpResponseRedirect(url)

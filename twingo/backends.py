@@ -1,60 +1,54 @@
 # -*- coding: utf-8 -*-
 
-"""
-Twingoで利用する認証バックエンドを提供します。
-
-@author: Jun-ya HASEBA
-"""
+import tweepy
+from tweepy.error import TweepError
 
 from django.conf import settings
 from django.contrib.auth.models import User
-
-import tweepy
 
 from twingo.models import Profile
 
 
 class TwitterBackend:
     """
-    TwitterのOAuthを利用した認証バックエンドです。
-    ModelBackendの代替として使用してください。
+    TwitterのOAuthを利用した認証バックエンド。
+    ModelBackendの代替として設定することを想定している。
     """
 
     def authenticate(self, access_token):
         """
-        Twitterから取得したアクセストークンをもとに認証を行います。
+        Twitterから取得したアクセストークンをもとに認証を行う。
 
-        @param access_token: Twitterから取得したアクセストークン
-        @type access_token: str
-        @return: 認証成功時はユーザーの情報を格納したUser。
-                 認証失敗時はNone。
-        @rtype: django.contrib.auth.models.User
+        :param access_token: アクセストークン
+        :type access_token: tuple
+        :return: ユーザー情報
+        :rtype: django.contrib.auth.models.User
         """
-        # APIオブジェクトを構築
+        # APIオブジェクトを構築する
         oauth_handler = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
         oauth_handler.set_access_token(access_token[0], access_token[1])
         api = tweepy.API(oauth_handler)
 
-        # ログインしようとしているユーザーのTwitter情報を取得
+        # ログインユーザーのTwitter情報を取得する
         try:
             twitter_user = api.me()
-        except:
+        except TweepError:
             return None
 
-        # ProfileとUserを取得
+        # ProfileとUserを取得する
         try:
             profile = Profile.objects.get(twitter_id=twitter_user.id)
             user = profile.user
         except Profile.DoesNotExist:
-            # Userを新規作成
+            # Userを新規作成する
             user = User()
             user.username = twitter_user.id
             user.first_name = twitter_user.screen_name
             user.last_name = twitter_user.name
-            user.password = 'Ruquia is my wife.'  # ルキアは俺の嫁
+            user.password = 'Ruquia is my wife.'
             user.save()
 
-            # Profileを新規作成
+            # Profileを新規作成する
             profile = Profile()
             profile.twitter_id = twitter_user.id
             profile.name = twitter_user.name
@@ -65,7 +59,7 @@ class TwitterBackend:
             profile.user = user
             profile.save()
 
-        # 認証済みのUserを返す
+        # ユーザーが有効であるかチェックする
         if user.is_active:
             return user
         else:
@@ -73,15 +67,14 @@ class TwitterBackend:
 
     def get_user(self, user_id):
         """
-        指定されたIDのUserを取得します。
+        指定されたIDのユーザー情報を取得する。
 
-        @param user_id: Userのプライマリーキー
-        @type user_id: int
-        @return: 取得したUser。
-                 取得できなかった場合はNone。
-        @rtype: django.contrib.auth.models.User
+        :param user_id: UserのID
+        :type user_id: int
+        :return: ユーザー情報
+        :rtype: django.contrib.auth.models.User
         """
-        # Userを取得
+        # ユーザー情報を取得する
         try:
             user = User.objects.get(pk=user_id, is_active=True)
             return user
