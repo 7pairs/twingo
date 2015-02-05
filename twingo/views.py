@@ -23,7 +23,7 @@ def twitter_login(request):
         settings.CONSUMER_SECRET,
         reverse(twitter_callback)
     )
-    authorization_url = oauth_handler.get_authorization_url()
+    authorization_url = request.build_absolute_uri(oauth_handler.get_authorization_url())
 
     # リクエストトークンをセッションに保存する
     request.session['request_token'] = oauth_handler.request_token
