@@ -17,12 +17,13 @@ def twitter_login(request):
     :return: 遷移先を示すレスポンスオブジェクト
     :rtype: django.http.HttpResponse
     """
-    # ハンドラを構築する
+    # 認証URLを取得する
     oauth_handler = tweepy.OAuthHandler(
         settings.CONSUMER_KEY,
         settings.CONSUMER_SECRET,
         reverse(twitter_callback)
     )
+    authorization_url = oauth_handler.get_authorization_url()
 
     # リクエストトークンをセッションに保存する
     request.session['request_token'] = oauth_handler.request_token
@@ -31,7 +32,7 @@ def twitter_login(request):
     request.session['next'] = request.GET.get('next')
 
     # 認証URLにリダイレクトする
-    return HttpResponseRedirect(oauth_handler.get_authorization_url())
+    return HttpResponseRedirect(authorization_url)
 
 
 def twitter_callback(request):
