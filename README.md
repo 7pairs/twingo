@@ -32,7 +32,7 @@ pip install git+https://github.com/7pairs/twingo.git
 twingoをDjangoから呼び出すための設定を行います。
 `settings.py` の `INSTALLED_APPS` に `twingo` の記述を追加してください。
 
-```
+```python
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,7 +48,7 @@ INSTALLED_APPS = (
 さらに、twingoを認証バックエンドとするための設定を行います。
 同じく `settings.py` に以下の記述を追加してください。
 
-```
+```python
 AUTHENTICATION_BACKENDS = (
     'twingo.backends.TwitterBackend',
 )
@@ -68,20 +68,20 @@ AUTHENTICATION_BACKENDS = (
 
 最後に、`urls.py` に以下の設定を追加してください。
 
-```
+```python
 urlpatterns = patterns('',
     # 中略
-    url(r'^authentication_url/', include('twingo.urls'))  # ←追加
+    (r'^authentication_url/', include('twingo.urls'))  # ←追加
 )
 ```
 
-第1引数の `r'^authentication_url/` は任意のURLで構いません。その配下のURLでtwingoが動作します。
+`r'^authentication_url/` は任意のURLで構いません。その配下のURLでtwingoが動作します。
 
 ## ユーザープロファイル
 
 twingoはDjangoのユーザープロファイルに対応しています。
 twingoの情報をユーザープロファイルとして使用する場合、 `settings.py` に以下の記述を追加してください。
 
-```
+```python
 AUTH_PROFILE_MODULE = 'twingo.profile'
 ```
