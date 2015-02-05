@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-Twingoで利用するモデルを提供します。
-
-@author: Jun-ya HASEBA
-"""
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import pre_save
@@ -14,17 +8,17 @@ from django.dispatch.dispatcher import receiver
 
 class Profile(models.Model):
     """
-    Twitterのユーザー情報を格納するモデルです。
+    Twitterのユーザー情報を格納するモデル。
     """
 
-    twitter_id = models.IntegerField(u'Twitter ID', db_index=True, unique=True)
+    twitter_id = models.IntegerField(u'Twitter ID', unique=True)
     """Twitter ID"""
 
     name = models.CharField(u'名前', max_length=20)
-    """名前 [例]ちぃといつ"""
+    """名前"""
 
     screen_name = models.CharField(u'ユーザー名', max_length=15)
-    """ユーザー名 [例]7pairs"""
+    """ユーザー名"""
 
     description = models.CharField(u'自己紹介', max_length=160, blank=True)
     """自己紹介"""
@@ -38,24 +32,24 @@ class Profile(models.Model):
     user = models.ForeignKey(User, verbose_name=u'認証ユーザー', unique=True)
     """Userへの外部キー"""
 
-    create_date = models.DateTimeField(u'登録日時', auto_now_add=True)
+    created_at = models.DateTimeField(u'登録日時', auto_now_add=True)
     """登録日時"""
 
-    update_date = models.DateTimeField(u'更新日時', auto_now=True)
+    updated_at = models.DateTimeField(u'更新日時', auto_now=True)
     """更新日時"""
 
 
 @receiver(pre_save, sender=Profile)
 def pre_save_profile(sender, instance, **kwargs):
     """
-    Profileをデータベースに保存する直前に呼び出されます。
+    Profileをデータベースに保存する際の前処理。
 
-    @param sender: モデルクラス
-    @type sender: class
-    @param instance: 保存するインスタンス
-    @type instance: Profile
-    @param kwargs: キーワード引数リスト
-    @type kwargs: list
+    :param sender: モデルクラス(ここでは未使用)
+    :type sender: Profile
+    :param instance: インスタンス
+    :type instance: Profile
+    :param kwargs: キーワード引数リスト(ここでは未使用)
+    :type kwargs: dict
     """
     # 自己紹介
     if instance.description is None:
@@ -68,4 +62,3 @@ def pre_save_profile(sender, instance, **kwargs):
     # ホームページのURL
     if instance.url is None:
         instance.url = ''
-
