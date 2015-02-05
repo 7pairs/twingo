@@ -1,26 +1,38 @@
 # twingo
 
-## はじめに
+## お知らせ
 
-"Twingo"とは、TwitterのOAuthを利用したDjango用の認証バックエンドです。
-あなたのアプリケーションに、Twitterのユーザー情報を利用したログインの仕組みを組み込むことができます。
+当プロジェクトは更新を終了しました。今後は後継プロジェクトの [twingo2](https://github.com/7pairs/twingo2) をよろしくお願いいたします。
 
-## 導入準備
+## 概要
 
-TwingoはDjango用の認証バックエンドですので、当然のことながらDjangoが必要になります。
-pipなどでインストールしておいてください。
+"twingo" は、TwitterのOAuthを利用したDjangoの認証バックエンドです。
+Twitterのユーザー情報を利用したログインの仕組みを、簡単な記述でアプリケーションに組み込むことができます。
 
-また、Twitterへのアクセスの際にTweepyを使用しています。
-こちらも別途インストールしておいてください。
+## バージョン
+
+Python2.7 + Django1.4での動作を確認しております。
+
+## インストール
+
+同梱の `setup.py` を実行してください。
+
+```
+python setup.py install
+```
+
+pipを利用して、GitHubから直接インストールすることもできます。
+
+```
+pip install git+https://github.com/7pairs/twingo.git
+```
 
 ## 設定
 
-まずは、Twingoのファイル一式をあなたのアプリケーションから参照できるパスに配置してください。
+twingoをDjangoから呼び出すための設定を行います。
+`settings.py` の `INSTALLED_APPS` に `twingo` の記述を追加してください。
 
-続いて、あなたのアプリケーションからTwingoを呼び出す設定をします。
-settings.pyのINSTALLED_APPSに"twingo"の記述を追加してください。
-
-```
+```python
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,49 +45,43 @@ INSTALLED_APPS = (
 )
 ```
 
-さらに、Twingoを認証バックエンドとする設定を行います。
-settings.pyに以下のように記述してください。
+さらに、twingoを認証バックエンドとするための設定を行います。
+同じく `settings.py` に以下の記述を追加してください。
 
-```
+```python
 AUTHENTICATION_BACKENDS = (
     'twingo.backends.TwitterBackend',
 )
 ```
 
-また、併せてsettings.pyに以下の定数を定義してください。
+また、あわせて `settings.py` に以下の定数を定義してください。
 
-* CONSUMER_KEY : あなたのアプリケーションのConsumer Key。
-* CONSUMER_SECRET : あなたのアプリケーションのConsumer Secret。
+* `CONSUMER_KEY` : Twitter APIのConsumer Key。
+* `CONSUMER_SECRET` : Twitter APIのConsumer Secret。
 
-なお、任意で以下の定数を定義することで、Twingoのデフォルトの動作を変更することもできます。
+なお、以下の定数を定義することで、twingoのデフォルトの動作を変更することができます（任意）。
 
-* CALLBACK_URL : Twitterからのコールバック時に呼び出されるURL。デフォルトは"http://(HTTP_HOST)/callback/"。
-* TOP_URL : あなたのサイトのトップ画面のURL。デフォルトは "/" 。
+* `AFTER_LOGIN_URL` : ログイン成功後のリダイレクト先URL。デフォルトは `/` 。
+* `AFTER_LOGOUT_URL` : ログアウト後のリダイレクト先URL。デフォルトは `/` 。
 
 ## URLディスパッチャー
 
-最後に、あなたのアプリケーションのurls.pyに以下の設定を追加してください。
+最後に、`urls.py` に以下の設定を追加してください。
 
-* ログインURLへのアクセス時 : "twingo.views.twitter_login"
-* TwitterからのコールバックURLへのアクセス時 : "twingo.views.twitter_callback"
-* ログアウトURLへのアクセス時 : "twingo.views.twitter_logout"
-
-例えば、以下のような記述内容になります。
-
-```
+```python
 urlpatterns = patterns('',
-    url(r'^accounts/login/$', 'twingo.views.twitter_login', name='login'),
-    url(r'^callback/$', 'twingo.views.twitter_callback', name='callback'),
-    url(r'^accounts/logout/$', 'twingo.views.twitter_logout', name='logout'),
+    # 中略
+    (r'^authentication_url/', include('twingo.urls'))  # ←追加
 )
 ```
 
+`r'^authentication_url/'` は任意のURLで構いません。その配下のURLでtwingoが動作します。
+
 ## ユーザープロファイル
 
-TwingoはDjangoのユーザープロファイルに対応しています。
-Twingoの情報をユーザープロファイルとして使用したい場合、settings.pyに以下の記述を追加してください。
+twingoはDjangoのユーザープロファイルに対応しています。
+twingoの情報をユーザープロファイルとして使用する場合、 `settings.py` に以下の記述を追加してください。
 
-```
+```python
 AUTH_PROFILE_MODULE = 'twingo.profile'
 ```
-
