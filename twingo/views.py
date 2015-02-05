@@ -29,7 +29,8 @@ def twitter_login(request):
     request.session['request_token'] = oauth_handler.request_token
 
     # ログイン完了後のリダイレクト先URLをセッションに保存する
-    request.session['next'] = request.GET.get('next')
+    if 'next' in request.GET:
+        request.session['next'] = request.GET['next']
 
     # 認証URLにリダイレクトする
     return HttpResponseRedirect(authorization_url)
