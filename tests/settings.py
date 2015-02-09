@@ -1,4 +1,4 @@
-# Django settings for twingo project.
+# -*- coding: utf-8 -*-
 
 import os
 
@@ -82,3 +82,6 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=twingo',
 ]
+
+CONSUMER_KEY = 'consumer_key'
+CONSUMER_SECRET = 'consumer_secret'
