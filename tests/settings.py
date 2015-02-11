@@ -61,7 +61,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'twingo.urls'
+ROOT_URLCONF = 'tests.urls'
 
 TEMPLATE_DIRS = ()
 

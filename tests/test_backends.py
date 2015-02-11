@@ -58,18 +58,18 @@ class ProfileFactory(factory.DjangoModelFactory):
     user = factory.LazyAttribute(lambda x: UserFactory())
 
 
-class BanUserFactory(UserFactory):
+class DisableUserFactory(UserFactory):
     """
     無効なユーザーのUserモデルを作成するファクトリー。
     """
     is_active = False
 
 
-class BanProfileFactory(ProfileFactory):
+class DisableProfileFactory(ProfileFactory):
     """
     無効なユーザーのProfileモデルを作成するファクトリー。
     """
-    user = factory.LazyAttribute(lambda x: BanUserFactory())
+    user = factory.LazyAttribute(lambda x: DisableUserFactory())
 
 
 @patch('tweepy.API')
@@ -130,7 +130,7 @@ def test_authenticate_03(oauth_handler, api):
     [条件] 無効なユーザーでログインする。
     [結果] Noneが返される。
     """
-    profile = BanProfileFactory()
+    profile = DisableProfileFactory()
     api.return_value.me.return_value = TwitterUser(id=profile.twitter_id)
 
     twitter_backend = TwitterBackend()
@@ -189,7 +189,7 @@ def test_get_user_03():
     [条件] 無効なユーザーのIDを指定する。
     [結果] Noneが返される。
     """
-    profile = BanProfileFactory()
+    profile = DisableProfileFactory()
 
     twitter_backend = TwitterBackend()
     actual = twitter_backend.get_user(profile.user.id)
