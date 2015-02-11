@@ -3,7 +3,7 @@
 import tweepy
 
 from django.conf import settings
-from django.contrib.auth import authenticate, login, logout
+import django.contrib.auth
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -66,9 +66,9 @@ def twitter_callback(request):
     access_token = oauth_handler.get_access_token(oauth_verifier)
 
     # 認証処理を実行する
-    authenticated_user = authenticate(access_token=access_token)
+    authenticated_user = django.contrib.auth.authenticate(access_token=access_token)
     if authenticated_user:
-        login(request, authenticated_user)
+        django.contrib.auth.login(request, authenticated_user)
     else:
         request.session.clear()
         return HttpResponse('Unauthorized', status=401)
@@ -88,7 +88,7 @@ def twitter_logout(request):
     :rtype: django.http.HttpResponse
     """
     # ログアウト処理を実行する
-    logout(request)
+    django.contrib.auth.logout(request)
 
     # ログアウト後に遷移するべき画面にリダイレクトする
     url = getattr(settings, 'AFTER_LOGOUT_URL', '/')
