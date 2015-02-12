@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import tweepy
+from tweepy import OAuthHandler
 
 from django.conf import settings
-import django.contrib.auth
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -18,7 +18,7 @@ def twitter_login(request):
     :rtype: django.http.HttpResponse
     """
     # 認証URLを取得する
-    oauth_handler = tweepy.OAuthHandler(
+    oauth_handler = OAuthHandler(
         settings.CONSUMER_KEY,
         settings.CONSUMER_SECRET,
         request.build_absolute_uri(reverse(twitter_callback))
@@ -61,14 +61,14 @@ def twitter_callback(request):
         return HttpResponse('Unauthorized', status=401)
 
     # アクセストークンを取得する
-    oauth_handler = tweepy.OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
+    oauth_handler = OAuthHandler(settings.CONSUMER_KEY, settings.CONSUMER_SECRET)
     oauth_handler.request_token = request_token
     access_token = oauth_handler.get_access_token(oauth_verifier)
 
     # 認証処理を実行する
-    authenticated_user = django.contrib.auth.authenticate(access_token=access_token)
+    authenticated_user = authenticate(access_token=access_token)
     if authenticated_user:
-        django.contrib.auth.login(request, authenticated_user)
+        login(request, authenticated_user)
     else:
         request.session.clear()
         return HttpResponse('Unauthorized', status=401)
@@ -88,7 +88,7 @@ def twitter_logout(request):
     :rtype: django.http.HttpResponse
     """
     # ログアウト処理を実行する
-    django.contrib.auth.logout(request)
+    logout(request)
 
     # ログアウト後に遷移するべき画面にリダイレクトする
     url = getattr(settings, 'AFTER_LOGOUT_URL', '/')

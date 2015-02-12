@@ -72,8 +72,8 @@ class DisableProfileFactory(ProfileFactory):
     user = factory.LazyAttribute(lambda x: DisableUserFactory())
 
 
-@patch('tweepy.API')
-@patch('tweepy.OAuthHandler')
+@patch('twingo.backends.API')
+@patch('twingo.backends.OAuthHandler')
 def test_authenticate_01(oauth_handler, api):
     """
     [対象] TwitterBackend.authenticate()
@@ -105,8 +105,8 @@ def test_authenticate_01(oauth_handler, api):
     assert_equal(profile.user, actual)
 
 
-@patch('tweepy.API')
-@patch('tweepy.OAuthHandler')
+@patch('twingo.backends.API')
+@patch('twingo.backends.OAuthHandler')
 def test_authenticate_02(oauth_handler, api):
     """
     [対象] TwitterBackend.authenticate()
@@ -122,8 +122,8 @@ def test_authenticate_02(oauth_handler, api):
     assert_equal(profile.user, actual)
 
 
-@patch('tweepy.API')
-@patch('tweepy.OAuthHandler')
+@patch('twingo.backends.API')
+@patch('twingo.backends.OAuthHandler')
 def test_authenticate_03(oauth_handler, api):
     """
     [対象] TwitterBackend.authenticate()
@@ -139,8 +139,8 @@ def test_authenticate_03(oauth_handler, api):
     assert_equal(None, actual)
 
 
-@patch('tweepy.API')
-@patch('tweepy.OAuthHandler')
+@patch('twingo.backends.API')
+@patch('twingo.backends.OAuthHandler')
 def test_authenticate_04(oauth_handler, api):
     """
     [対象] TwitterBackend.authenticate()

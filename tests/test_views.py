@@ -35,7 +35,7 @@ class ViewsTest(TestCase):
         }
         self.client.cookies[session_cookie].update(cookie_data)
 
-    @patch('tweepy.OAuthHandler')
+    @patch('twingo.views.OAuthHandler')
     def test_twitter_login_01(self, oauth_handler):
         """
         [対象] twitter_login()
@@ -51,7 +51,7 @@ class ViewsTest(TestCase):
         assert_equal('Request Token', session['request_token'])
         assert_equal(None, session.get('next'))
 
-    @patch('tweepy.OAuthHandler')
+    @patch('twingo.views.OAuthHandler')
     def test_twitter_login_02(self, oauth_handler):
         """
         [対象] twitter_login()
@@ -67,9 +67,9 @@ class ViewsTest(TestCase):
         assert_equal('Request Token', session['request_token'])
         assert_equal('/next_page/', session.get('next'))
 
-    @patch('django.contrib.auth.login')
-    @patch('django.contrib.auth.authenticate')
-    @patch('tweepy.OAuthHandler')
+    @patch('twingo.views.login')
+    @patch('twingo.views.authenticate')
+    @patch('twingo.views.OAuthHandler')
     def test_twitter_callback_01(self, oauth_handler, authenticate, login):
         """
         [対象] twitter_callback()
@@ -87,9 +87,9 @@ class ViewsTest(TestCase):
         self.assertRedirects(response, '/next/')
 
     @override_settings(AFTER_LOGIN_URL='/after/')
-    @patch('django.contrib.auth.login')
-    @patch('django.contrib.auth.authenticate')
-    @patch('tweepy.OAuthHandler')
+    @patch('twingo.views.login')
+    @patch('twingo.views.authenticate')
+    @patch('twingo.views.OAuthHandler')
     def test_twitter_callback_02(self, oauth_handler, authenticate, login):
         """
         [対象] twitter_callback()
@@ -105,9 +105,9 @@ class ViewsTest(TestCase):
         response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
         self.assertRedirects(response, '/after/')
 
-    @patch('django.contrib.auth.login')
-    @patch('django.contrib.auth.authenticate')
-    @patch('tweepy.OAuthHandler')
+    @patch('twingo.views.login')
+    @patch('twingo.views.authenticate')
+    @patch('twingo.views.OAuthHandler')
     def test_twitter_callback_03(self, oauth_handler, authenticate, login):
         """
         [対象] twitter_callback()
@@ -145,8 +145,8 @@ class ViewsTest(TestCase):
         response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
         assert_equal(401, response.status_code)
 
-    @patch('django.contrib.auth.authenticate')
-    @patch('tweepy.OAuthHandler')
+    @patch('twingo.views.authenticate')
+    @patch('twingo.views.OAuthHandler')
     def test_twitter_callback_06(self, oauth_handler, authenticate):
         """
         [対象] twitter_callback()
@@ -163,7 +163,7 @@ class ViewsTest(TestCase):
         assert_equal(401, response.status_code)
 
     @override_settings(AFTER_LOGOUT_URL='/after/')
-    @patch('django.contrib.auth.logout')
+    @patch('twingo.views.logout')
     def test_twitter_logout_01(self, logout):
         """
         [対象] twitter_logout()
@@ -173,7 +173,7 @@ class ViewsTest(TestCase):
         response = self.client.get(reverse('twingo_logout'))
         self.assertRedirects(response, '/after/')
 
-    @patch('django.contrib.auth.logout')
+    @patch('twingo.views.logout')
     def test_twitter_logout_02(self, logout):
         """
         [対象] twitter_logout()
