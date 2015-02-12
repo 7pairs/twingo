@@ -11,7 +11,7 @@ Twitterのユーザー情報を利用したログインの仕組みを、簡単�
 
 ## バージョン
 
-Python2.7 + Django1.4での動作を確認しております。
+Python2.7 + Django1.4での動作を確認しております。また、Python2.6 + Django1.4の組み合わせでもユニットテストを実施しております。
 
 ## インストール
 
@@ -85,3 +85,8 @@ twingoの情報をユーザープロファイルとして使用する場合、 `
 ```python
 AUTH_PROFILE_MODULE = 'twingo.profile'
 ```
+
+## ライセンス
+
+twingoは [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0) にて提供します。
+ただし、twingoが依存している [Tweepy](https://github.com/tweepy/tweepy) は [The MIT License](http://opensource.org/licenses/mit-license.php) にて提供されていますのでご注意ください。
