@@ -1,5 +1,8 @@
 # twingo
 
+[![Build Status](https://travis-ci.org/7pairs/twingo.svg?branch=master)](https://travis-ci.org/7pairs/twingo)
+[![Coverage Status](https://coveralls.io/repos/7pairs/twingo/badge.svg?branch=master)](https://coveralls.io/r/7pairs/twingo?branch=master)
+
 ## お知らせ
 
 当プロジェクトは更新を終了しました。今後は後継プロジェクトの [twingo2](https://github.com/7pairs/twingo2) をよろしくお願いいたします。
