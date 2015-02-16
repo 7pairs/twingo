@@ -28,6 +28,9 @@ from django.utils.importlib import import_module
 
 
 class ViewsTest(TestCase):
+    """
+    views.pyに対するテストコード。
+    """
 
     def setUp(self):
         """

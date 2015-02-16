@@ -21,6 +21,7 @@ from nose.tools import *
 import factory
 
 from django.contrib.auth.models import User
+from django.test import TestCase
 
 from twingo.models import Profile
 
@@ -54,14 +55,19 @@ class ProfileFactory(factory.DjangoModelFactory):
     user = factory.LazyAttribute(lambda x: UserFactory())
 
 
-def test_pre_save_profile_01():
+class ModelsTest(TestCase):
     """
-    [対象] pre_save_profile()
-    [条件] 任意入力の項目をNoneで保存する。
-    [結果] Noneのフィールドが空文字に変換される。
+    models.pyに対するテストコード。
     """
-    profile = ProfileFactory()
 
-    assert_equal('', profile.description)
-    assert_equal('', profile.profile_image_url)
-    assert_equal('', profile.url)
+    def test_pre_save_profile_01(self):
+        """
+        [対象] pre_save_profile()
+        [条件] 任意入力の項目をNoneで保存する。
+        [結果] Noneのフィールドが空文字に変換される。
+        """
+        profile = ProfileFactory()
+
+        assert_equal('', profile.description)
+        assert_equal('', profile.profile_image_url)
+        assert_equal('', profile.url)
