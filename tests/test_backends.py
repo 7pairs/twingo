@@ -70,8 +70,8 @@ class ProfileFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda x: 'name_%02d' % x)
     screen_name = factory.Sequence(lambda x: 'screen_name_%02d' % x)
     description = factory.Sequence(lambda x: 'description_%02d' % x)
-    profile_image_url = factory.Sequence(lambda x: 'http://dummy.com/%02d.jpg')
-    url = factory.Sequence(lambda x: 'http://dummy.com/%02d.html')
+    profile_image_url = factory.Sequence(lambda x: 'http://dummy.com/%02d.jpg' % x)
+    url = factory.Sequence(lambda x: 'http://dummy.com/%02d.html' % x)
     user = factory.LazyAttribute(lambda x: UserFactory())
 
 
