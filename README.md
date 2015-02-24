@@ -69,7 +69,7 @@ AUTHENTICATION_BACKENDS = (
 
 ## URLディスパッチャー
 
-最後に、`urls.py` に以下の設定を追加してください。
+`urls.py` に以下の設定を追加してください。
 
 ```python
 urlpatterns = patterns('',
@@ -79,6 +79,14 @@ urlpatterns = patterns('',
 ```
 
 `r'^authentication_url/'` は任意のURLで構いません。その配下のURLでtwingoが動作します。
+
+また、 `@login_required` デコレータを使用する場合、 `settings.py` に以下の記述を追加してください。
+
+```python
+LOGIN_URL = 'authentication_url/login/'
+```
+
+`authentication_url` の部分は `urls.py` で設定した値と合わせてください。
 
 ## ユーザープロファイル
 
