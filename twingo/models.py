@@ -30,20 +30,20 @@ class Profile(models.Model):
     twitter_id = models.IntegerField(u'Twitter ID', unique=True)
     """Twitter ID"""
 
-    name = models.CharField(u'名前', max_length=20)
-    """名前"""
-
     screen_name = models.CharField(u'ユーザー名', max_length=15)
     """ユーザー名"""
+
+    name = models.CharField(u'名前', max_length=20)
+    """名前"""
 
     description = models.CharField(u'自己紹介', max_length=160, blank=True)
     """自己紹介"""
 
-    profile_image_url = models.URLField(u'プロフィール画像', blank=True)
-    """プロフィール画像のURL"""
-
     url = models.URLField(u'ホームページ', blank=True)
     """ホームページのURL"""
+
+    profile_image_url = models.URLField(u'プロフィール画像', blank=True)
+    """プロフィール画像のURL"""
 
     user = models.ForeignKey(User, verbose_name=u'認証ユーザー', unique=True)
     """Userへの外部キー"""
