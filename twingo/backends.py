@@ -61,7 +61,7 @@ class TwitterBackend:
             user.username = twitter_user.id
             user.first_name = twitter_user.screen_name
             user.last_name = twitter_user.name
-            user.password = user.set_unusable_password()
+            user.set_unusable_password()
             user.save()
 
             # Profileを作成する
