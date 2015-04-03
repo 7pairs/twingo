@@ -71,10 +71,10 @@ def pre_save_profile(sender, instance, **kwargs):
     if instance.description is None:
         instance.description = ''
 
-    # プロフィール画像のURL
-    if instance.profile_image_url is None:
-        instance.profile_image_url = ''
-
     # ホームページのURL
     if instance.url is None:
         instance.url = ''
+
+    # プロフィール画像のURL
+    if instance.profile_image_url is None:
+        instance.profile_image_url = ''
