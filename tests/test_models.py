@@ -16,8 +16,6 @@
 # limitations under the License.
 #
 
-from nose.tools import *
-
 import factory
 
 from django.contrib.auth.models import User
@@ -28,7 +26,7 @@ from twingo.models import Profile
 
 class UserFactory(factory.DjangoModelFactory):
     """
-    Userモデルを作成するファクトリー。
+    Userのテストデータを作成するファクトリー。
     """
     FACTORY_FOR = User
     username = factory.Sequence(lambda x: 'username_%02d' % x)
@@ -43,15 +41,15 @@ class UserFactory(factory.DjangoModelFactory):
 
 class ProfileFactory(factory.DjangoModelFactory):
     """
-    Profileモデルを作成するファクトリー。
+    Profileのテストデータを作成するファクトリー。
     """
     FACTORY_FOR = Profile
     twitter_id = factory.Sequence(lambda x: x)
-    name = factory.Sequence(lambda x: 'name_%02d' % x)
     screen_name = factory.Sequence(lambda x: 'screen_name_%02d' % x)
+    name = factory.Sequence(lambda x: 'name_%02d' % x)
     description = None
-    profile_image_url = None
     url = None
+    profile_image_url = None
     user = factory.LazyAttribute(lambda x: UserFactory())
 
 
@@ -63,11 +61,11 @@ class ModelsTest(TestCase):
     def test_pre_save_profile_01(self):
         """
         [対象] pre_save_profile()
-        [条件] 任意入力の項目をNoneで保存する。
-        [結果] Noneのフィールドが空文字に変換される。
+        [条件] 任意入力の項目にNoneを設定する。
+        [結果] 該当の項目が空文字として保存される。
         """
         profile = ProfileFactory()
 
-        assert_equal('', profile.description)
-        assert_equal('', profile.profile_image_url)
-        assert_equal('', profile.url)
+        self.assertEqual('', profile.description)
+        self.assertEqual('', profile.url)
+        self.assertEqual('', profile.profile_image_url)
