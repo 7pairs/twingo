@@ -50,7 +50,10 @@ class UserFactory(factory.DjangoModelFactory):
     """
     Userのテストデータを作成するファクトリー。
     """
-    FACTORY_FOR = User
+
+    class Meta:
+        model = User
+
     username = factory.Sequence(lambda x: 'username_%02d' % x)
     first_name = factory.Sequence(lambda x: 'first_name_%02d' % x)
     last_name = factory.Sequence(lambda x: 'last_name_%02d' % x)
@@ -65,7 +68,10 @@ class ProfileFactory(factory.DjangoModelFactory):
     """
     Profileのテストデータを作成するファクトリー。
     """
-    FACTORY_FOR = Profile
+
+    class Meta:
+        model = Profile
+
     twitter_id = factory.Sequence(lambda x: x)
     screen_name = factory.Sequence(lambda x: 'screen_name_%02d' % x)
     name = factory.Sequence(lambda x: 'name_%02d' % x)
