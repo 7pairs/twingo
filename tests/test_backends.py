@@ -24,6 +24,8 @@ from tweepy.error import TweepError
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from twingo.models import Profile
+
 
 class TwitterUser:
     """
@@ -67,7 +69,6 @@ class ProfileFactory(factory.DjangoModelFactory):
     """
 
     class Meta:
-        from twingo.models import Profile
         model = Profile
 
     twitter_id = factory.Sequence(lambda x: x)
@@ -129,7 +130,6 @@ class BackendsTest(TestCase):
         twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.authenticate(('key', 'secret'))
 
-        from twingo.models import Profile
         profile = Profile.objects.get(twitter_id=1402804142)
         self.assertEqual(profile.user, actual)
         self.assertEqual('7pairs', profile.screen_name)
