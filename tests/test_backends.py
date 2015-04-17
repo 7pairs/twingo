@@ -24,7 +24,6 @@ from tweepy.error import TweepError
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from twingo.backends import TwitterBackend
 from twingo.models import Profile
 
 
@@ -100,6 +99,17 @@ class BackendsTest(TestCase):
     backends.pyに対するテストコード。
     """
 
+    def _get_twitter_backend(self):
+        """
+        新しいTwitterBackendオブジェクトを取得する。
+
+        :return: TwitterBackendオブジェクト
+        :rtype: twingo.backends.TwitterBackend
+        """
+        # TwitterBackendオブジェクトを返す
+        from twingo.backends import TwitterBackend
+        return TwitterBackend()
+
     @patch('twingo.backends.API')
     @patch('twingo.backends.OAuthHandler')
     def test_authenticate_01(self, oauth_handler, api):
@@ -117,7 +127,7 @@ class BackendsTest(TestCase):
             profile_image_url='https://pbs.twimg.com/profile_images/1402804142/icon_400x400.jpg'
         )
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.authenticate(('key', 'secret'))
 
         profile = Profile.objects.get(twitter_id=1402804142)
@@ -142,7 +152,7 @@ class BackendsTest(TestCase):
         profile = ProfileFactory()
         api.return_value.me.return_value = TwitterUser(id=profile.twitter_id)
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.authenticate(('key', 'secret'))
 
         self.assertEqual(profile.user, actual)
@@ -158,7 +168,7 @@ class BackendsTest(TestCase):
         profile = DisableProfileFactory()
         api.return_value.me.return_value = TwitterUser(id=profile.twitter_id)
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.authenticate(('key', 'secret'))
 
         self.assertIsNone(actual)
@@ -173,7 +183,7 @@ class BackendsTest(TestCase):
         """
         api.return_value.me.side_effect = TweepError('reason')
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.authenticate(('key', 'secret'))
 
         self.assertIsNone(actual)
@@ -186,7 +196,7 @@ class BackendsTest(TestCase):
         """
         profile = ProfileFactory()
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.get_user(profile.user.id)
 
         self.assertEqual(profile.user, actual)
@@ -199,7 +209,7 @@ class BackendsTest(TestCase):
         """
         profile = ProfileFactory()
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.get_user(profile.user.id + 1)
 
         self.assertIsNone(actual)
@@ -212,7 +222,7 @@ class BackendsTest(TestCase):
         """
         profile = DisableProfileFactory()
 
-        twitter_backend = TwitterBackend()
+        twitter_backend = self._get_twitter_backend()
         actual = twitter_backend.get_user(profile.user.id)
 
         self.assertIsNone(actual)

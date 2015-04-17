@@ -30,5 +30,5 @@ setup(
     author_email='7pairs@gmail.com',
     url='https://github.com/7pairs/twingo',
     packages=find_packages(exclude=['tests']),
-    install_requires=['tweepy'],
+    install_requires=['tweepy>=3.0'],
 )
