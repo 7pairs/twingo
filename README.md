@@ -5,7 +5,7 @@
 
 ## 重要なお知らせ
 
-当プロジェクトは更新を終了しました。後継プロジェクトの [twingo2](https://github.com/7pairs/twingo2) をよろしくお願いいたします。
+当プロジェクトは更新を終了しました。後継プロジェクトの [twingo2](https://github.com/7pairs/twingo2) をよろしくお願いします。
 
 ## 概要
 
@@ -14,20 +14,20 @@ Twitterのユーザー情報による認証の仕組みを簡単な記述でア�
 
 ## バージョン
 
-Python2.7 + Django1.4での動作を確認しております。また、Python2.6 + Django1.4の組み合わせでもユニットテストを実施しております。
+Python2.7 + Django1.4での動作を確認しています。また、Python2.6 + Django1.4の組み合わせでもユニットテストを実施しています。
 
 ## インストール
 
 同梱の `setup.py` を実行してください。
 
 ```console
-python setup.py install
+$ python setup.py install
 ```
 
 pipを利用し、GitHubから直接インストールすることもできます。
 
 ```console
-pip install git+https://github.com/7pairs/twingo.git
+$ pip install git+https://github.com/7pairs/twingo.git
 ```
 
 ## 設定
@@ -53,13 +53,17 @@ AUTHENTICATION_BACKENDS = (
 
 また、あわせて `settings.py` に以下の定数を定義してください。
 
-* `CONSUMER_KEY` : Twitter APIのConsumer Key。
-* `CONSUMER_SECRET` : Twitter APIのConsumer Secret。
+|定数名|設定する値|
+|---|---|
+|`CONSUMER_KEY`|Twitter APIのConsumer Key|
+|`CONSUMER_SECRET`|Twitter APIのConsumer Secret|
 
 なお、以下の定数を定義することでtwingoのデフォルトの動作を上書きすることができます（任意）。
 
-* `AFTER_LOGIN_URL` : ログイン成功後のリダイレクト先URL。デフォルトは `/` 。
-* `AFTER_LOGOUT_URL` : ログアウト後のリダイレクト先URL。デフォルトは `/` 。
+|定数名|設定する値|デフォルト値|
+|---|---|---|
+|`AFTER_LOGIN_URL`|ログイン成功後のリダイレクト先URL|`/`|
+|`AFTER_LOGOUT_URL`|ログアウト後のリダイレクト先URL|`/`|
 
 ## URLディスパッチャー
 
@@ -80,7 +84,7 @@ urlpatterns = patterns('',
 LOGIN_URL = 'authentication_url/login/'
 ```
 
-`authentication_url` の部分は `urls.py` にて設定した値と同じものにしてください。
+`authentication_url` の部分は `urls.py` にて設定した値と同一のものにしてください。
 
 ## ユーザープロファイル
 
