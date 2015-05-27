@@ -10,7 +10,7 @@
 ## 概要
 
 "twingo"は、TwitterのOAuthを利用したDjangoの認証バックエンドです。
-Twitterのユーザー情報による認証の仕組みを簡単な記述でアプリケーションに組み込むことができます。
+Twitterのユーザー情報による認証の仕組みを簡単な記述でDjangoアプリケーションに組み込むことができます。
 
 ## バージョン
 
@@ -32,7 +32,7 @@ $ pip install git+https://github.com/7pairs/twingo.git
 
 ## 設定
 
-twingoをDjangoから呼び出すための設定を行います。
+Djangoからtwingoを呼び出すための設定を行います。
 まず、 `settings.py` の `INSTALLED_APPS` に `twingo` を追加してください。
 
 ```python
@@ -53,17 +53,17 @@ AUTHENTICATION_BACKENDS = (
 
 また、あわせて `settings.py` に以下の定数を定義してください。
 
-|定数名|設定する値|
-|---|---|
-|`CONSUMER_KEY`|Twitter APIのConsumer Key|
+|定数名           |設定する値                  |
+|-----------------|----------------------------|
+|`CONSUMER_KEY`   |Twitter APIのConsumer Key   |
 |`CONSUMER_SECRET`|Twitter APIのConsumer Secret|
 
-なお、以下の定数を定義することでtwingoのデフォルトの動作を上書きすることができます（任意）。
+なお、以下の定数を定義することで、twingoのデフォルトの動作を上書きすることができます（任意）。
 
-|定数名|設定する値|デフォルト値|
-|---|---|---|
-|`AFTER_LOGIN_URL`|ログイン成功後のリダイレクト先URL|`/`|
-|`AFTER_LOGOUT_URL`|ログアウト後のリダイレクト先URL|`/`|
+|定数名            |設定する値                       |デフォルト値|
+|------------------|---------------------------------|------------|
+|`AFTER_LOGIN_URL` |ログイン成功後のリダイレクト先URL|`/`         |
+|`AFTER_LOGOUT_URL`|ログアウト後のリダイレクト先URL  |`/`         |
 
 ## URLディスパッチャー
 
@@ -89,7 +89,7 @@ LOGIN_URL = 'authentication_url/login/'
 ## ユーザープロファイル
 
 twingoはDjangoのユーザープロファイルに対応しています。
-twingoで保持する情報をユーザープロファイルとして使用する場合、 `settings.py` に以下の記述を追加してください。
+twingoで保持している情報をユーザープロファイルとして使用する場合、 `settings.py` に以下の記述を追加してください。
 
 ```python
 AUTH_PROFILE_MODULE = 'twingo.profile'
