@@ -66,7 +66,7 @@ class ModelsTest(TestCase):
 
     def test_pre_save_profile_01(self):
         """
-        [対象] pre_save_profile()
+        [対象] pre_save_profile() : No.01
         [条件] 任意入力の項目にNoneを設定する。
         [結果] 該当の項目が空文字として保存される。
         """
