@@ -62,9 +62,9 @@ def pre_save_profile(sender, instance, **kwargs):
 
     :param sender: モデルクラス(ここでは未使用)
     :type sender: Profile
-    :param instance: インスタンス
+    :param instance: 保存するインスタンス
     :type instance: Profile
-    :param kwargs: キーワード引数リスト(ここでは未使用)
+    :param kwargs: キーワード引数(ここでは未使用)
     :type kwargs: dict
     """
     # 自己紹介

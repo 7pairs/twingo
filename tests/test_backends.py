@@ -30,7 +30,7 @@ from twingo.models import Profile
 class TwitterUser:
     """
     Twitterのユーザー情報を格納するテスト用クラス。
-    Tweepyのモックによる返却値として使用する。
+    Tweepyを模したモックによる返却値として使用する。
     """
 
     def __init__(self, **kwargs):
@@ -84,6 +84,7 @@ class DisableUserFactory(UserFactory):
     """
     無効なユーザーを表すUserのテストデータを作成するファクトリー。
     """
+
     is_active = False
 
 
@@ -91,6 +92,7 @@ class DisableProfileFactory(ProfileFactory):
     """
     無効なユーザーを表すProfileのテストデータを作成するファクトリー。
     """
+
     user = factory.LazyAttribute(lambda x: DisableUserFactory())
 
 
@@ -99,14 +101,14 @@ class BackendsTest(TestCase):
     backends.pyに対するテストコード。
     """
 
-    def _get_twitter_backend(self):
+    def _get_target_object(self):
         """
-        新しいTwitterBackendオブジェクトを取得する。
+        テスト対象のオブジェクトを取得する。
 
-        :return: TwitterBackendオブジェクト
+        :return: テスト対象のバックエンドオブジェクト
         :rtype: twingo.backends.TwitterBackend
         """
-        # TwitterBackendオブジェクトを返す
+        # テスト対象のオブジェクトを生成する
         from twingo.backends import TwitterBackend
         return TwitterBackend()
 
@@ -114,9 +116,9 @@ class BackendsTest(TestCase):
     @patch('twingo.backends.OAuthHandler')
     def test_authenticate_01(self, oauth_handler, api):
         """
-        [対象] TwitterBackend.authenticate()
+        [対象] authenticate() : No.01
         [条件] 新規ユーザーでログインする。
-        [結果] ユーザーの情報がデータベースに保存され、該当ユーザーのUserオブジェクトが返される。
+        [結果] ユーザーの情報がデータベースに保存され、該当ユーザーのUserオブジェクトが返却される。
         """
         api.return_value.me.return_value = TwitterUser(
             id=1402804142,
@@ -127,8 +129,8 @@ class BackendsTest(TestCase):
             profile_image_url='https://pbs.twimg.com/profile_images/1402804142/icon_400x400.jpg'
         )
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.authenticate(('key', 'secret'))
+        target = self._get_target_object()
+        actual = target.authenticate(('key', 'secret'))
 
         profile = Profile.objects.get(twitter_id=1402804142)
         self.assertEqual(profile.user, actual)
@@ -145,15 +147,15 @@ class BackendsTest(TestCase):
     @patch('twingo.backends.OAuthHandler')
     def test_authenticate_02(self, oauth_handler, api):
         """
-        [対象] TwitterBackend.authenticate()
+        [対象] authenticate() : No.02
         [条件] 既存ユーザーでログインする。
-        [結果] 該当ユーザーのUserオブジェクトが返される。
+        [結果] 該当ユーザーのUserオブジェクトが返却される。
         """
         profile = ProfileFactory()
         api.return_value.me.return_value = TwitterUser(id=profile.twitter_id)
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.authenticate(('key', 'secret'))
+        target = self._get_target_object()
+        actual = target.authenticate(('key', 'secret'))
 
         self.assertEqual(profile.user, actual)
 
@@ -161,15 +163,15 @@ class BackendsTest(TestCase):
     @patch('twingo.backends.OAuthHandler')
     def test_authenticate_03(self, oauth_handler, api):
         """
-        [対象] TwitterBackend.authenticate()
+        [対象] authenticate() : No.03
         [条件] 無効なユーザーでログインする。
-        [結果] Noneが返される。
+        [結果] Noneが返却される。
         """
         profile = DisableProfileFactory()
         api.return_value.me.return_value = TwitterUser(id=profile.twitter_id)
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.authenticate(('key', 'secret'))
+        target = self._get_target_object()
+        actual = target.authenticate(('key', 'secret'))
 
         self.assertIsNone(actual)
 
@@ -177,52 +179,52 @@ class BackendsTest(TestCase):
     @patch('twingo.backends.OAuthHandler')
     def test_authenticate_04(self, oauth_handler, api):
         """
-        [対象] TwitterBackend.authenticate()
-        [条件] Twitterからエラーが返される。
-        [結果] Noneが返される。
+        [対象] authenticate() : No.04
+        [条件] Twitterからエラーが返却される。
+        [結果] Noneが返却される。
         """
         api.return_value.me.side_effect = TweepError('reason')
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.authenticate(('key', 'secret'))
+        target = self._get_target_object()
+        actual = target.authenticate(('key', 'secret'))
 
         self.assertIsNone(actual)
 
     def test_get_user_01(self):
         """
-        [対象] TwitterBackend.get_user()
+        [対象] get_user() : No.01
         [条件] 既存ユーザーのIDを指定する。
-        [結果] 該当ユーザーのUserオブジェクトが返される。
+        [結果] 該当ユーザーのUserオブジェクトが返却される。
         """
         profile = ProfileFactory()
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.get_user(profile.user.id)
+        target = self._get_target_object()
+        actual = target.get_user(profile.user.id)
 
         self.assertEqual(profile.user, actual)
 
     def test_get_user_02(self):
         """
-        [対象] TwitterBackend.get_user()
+        [対象] get_user() : No.02
         [条件] 存在しないユーザーのIDを指定する。
-        [結果] Noneが返される。
+        [結果] Noneが返却される。
         """
         profile = ProfileFactory()
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.get_user(profile.user.id + 1)
+        target = self._get_target_object()
+        actual = target.get_user(profile.user.id + 1)
 
         self.assertIsNone(actual)
 
     def test_get_user_03(self):
         """
-        [対象] TwitterBackend.get_user()
+        [対象] get_user() : No.03
         [条件] 無効なユーザーのIDを指定する。
-        [結果] Noneが返される。
+        [結果] Noneが返却される。
         """
         profile = DisableProfileFactory()
 
-        twitter_backend = self._get_twitter_backend()
-        actual = twitter_backend.get_user(profile.user.id)
+        target = self._get_target_object()
+        actual = target.get_user(profile.user.id)
 
         self.assertIsNone(actual)
