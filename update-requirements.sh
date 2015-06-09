@@ -24,21 +24,21 @@ EXCLUDE_LIBRARIES=('Django')
 
 # インストール済みのライブラリをいったんアンインストールする
 pip freeze | awk -F '==' '{print $1}' | while read library; do
-	pip uninstall -y ${library}
+    pip uninstall -y ${library}
 done
 
 # 対象のライブラリをインストールする
 for library in ${INSTALL_LIBRARIES[@]}; do
-	pip install $library
+    pip install $library
 done
 
 # requirements.txtを更新する
 : > ./requirements.txt
 pip freeze | while read line; do
-	for exclude in ${EXCLUDE_LIBRARIES[@]}; do
-		if [[ ${line} =~ "${exclude}==" ]]; then
-			continue 2
-		fi
-	done
-	echo ${line} >> ./requirements.txt
+    for exclude in ${EXCLUDE_LIBRARIES[@]}; do
+        if [[ ${line} =~ "${exclude}==" ]]; then
+            continue 2
+        fi
+    done
+    echo ${line} >> ./requirements.txt
 done
