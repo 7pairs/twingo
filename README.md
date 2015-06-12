@@ -5,7 +5,8 @@
 
 ## 重要なお知らせ
 
-当プロジェクトは更新を終了しました。後継プロジェクトの [twingo2](https://github.com/7pairs/twingo2) をよろしくお願いします。
+当プロジェクトは更新を終了しました。
+後継プロジェクトの [twingo2](https://github.com/7pairs/twingo2) をよろしくお願いします。
 
 ## 概要
 
@@ -14,7 +15,8 @@ Twitterのユーザー情報による認証の仕組みを簡単な記述でDjan
 
 ## バージョン
 
-Python2.7 + Django1.4での動作を確認しています。また、Python2.6 + Django1.4の組み合わせでもユニットテストを実施しています。
+Python2.7 + Django1.4での動作を確認しています。
+また、Python2.6 + Django1.4の組み合わせでもユニットテストを実施しています。
 
 ## インストール
 
@@ -76,7 +78,8 @@ urlpatterns = patterns('',
 )
 ```
 
-`r'^authentication_url/'` は任意のURLで構いません。その配下のURLでtwingoが動作します。
+`r'^authentication_url/'` は任意のURLで構いません。
+その配下のURLでtwingoが動作します。
 
 また、 `@login_required` デコレータを使用する場合、 `settings.py` に以下の記述を追加してください。
 
