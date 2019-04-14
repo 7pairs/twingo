@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+from importlib import import_module
 from mock import patch
 
 from django.conf import settings
@@ -23,7 +24,6 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 from django.test.utils import override_settings
-from django.utils.importlib import import_module
 
 
 class ViewsTest(TestCase):
