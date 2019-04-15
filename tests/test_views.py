@@ -20,7 +20,7 @@ from importlib import import_module
 from mock import patch
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.test import TestCase
 from django.test.client import Client
 from django.test.utils import override_settings
@@ -63,7 +63,7 @@ class ViewsTest(TestCase):
         oauth_handler.return_value.get_authorization_url.return_value = '/redirect/'
         oauth_handler.return_value.request_token = 'Request Token'
 
-        response = self.client.get(reverse('twingo_login'))
+        response = self.client.get(reverse_lazy('twingo_login'))
 
         session = self.client.session
         self.assertRedirects(response, '/redirect/')
@@ -80,7 +80,7 @@ class ViewsTest(TestCase):
         oauth_handler.return_value.get_authorization_url.return_value = '/redirect/'
         oauth_handler.return_value.request_token = 'Request Token'
 
-        response = self.client.get(reverse('twingo_login'), {'next': '/next_page/'})
+        response = self.client.get(reverse_lazy('twingo_login'), {'next': '/next_page/'})
 
         session = self.client.session
         self.assertRedirects(response, '/redirect/')
@@ -102,7 +102,7 @@ class ViewsTest(TestCase):
         session['next'] = '/next/'
         session.save()
 
-        response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
+        response = self.client.get(reverse_lazy('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
 
         self.assertRedirects(response, '/next/')
 
@@ -121,7 +121,7 @@ class ViewsTest(TestCase):
         session['request_token'] = {'oauth_token': 'token'}
         session.save()
 
-        response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
+        response = self.client.get(reverse_lazy('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
 
         self.assertRedirects(response, '/after/')
 
@@ -139,7 +139,7 @@ class ViewsTest(TestCase):
         session['request_token'] = {'oauth_token': 'token'}
         session.save()
 
-        response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
+        response = self.client.get(reverse_lazy('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
 
         self.assertRedirects(response, '/')
 
@@ -149,7 +149,7 @@ class ViewsTest(TestCase):
         [条件] リクエストトークンをセッションに設定しない。
         [結果] 401エラーが発生する。
         """
-        response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
+        response = self.client.get(reverse_lazy('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
 
         self.assertEqual(401, response.status_code)
 
@@ -163,7 +163,7 @@ class ViewsTest(TestCase):
         session['request_token'] = {'oauth_token': 'error_token'}
         session.save()
 
-        response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
+        response = self.client.get(reverse_lazy('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
 
         self.assertEqual(401, response.status_code)
 
@@ -180,7 +180,7 @@ class ViewsTest(TestCase):
         session['request_token'] = {'oauth_token': 'token'}
         session.save()
 
-        response = self.client.get(reverse('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
+        response = self.client.get(reverse_lazy('twingo_callback'), {'oauth_token': 'token', 'oauth_verifier': 'verifier'})
 
         self.assertEqual(401, response.status_code)
 
@@ -192,7 +192,7 @@ class ViewsTest(TestCase):
         [条件] ログイン後に遷移する画面をsettings.pyで指定する。
         [結果] 指定された画面にリダイレクトされる。
         """
-        response = self.client.get(reverse('twingo_logout'))
+        response = self.client.get(reverse_lazy('twingo_logout'))
 
         self.assertRedirects(response, '/after/')
 
@@ -203,6 +203,6 @@ class ViewsTest(TestCase):
         [条件] ログイン後に遷移する画面をsettings.pyで指定しない。
         [結果] トップ画面にリダイレクトされる。
         """
-        response = self.client.get(reverse('twingo_logout'))
+        response = self.client.get(reverse_lazy('twingo_logout'))
 
         self.assertRedirects(response, '/')
